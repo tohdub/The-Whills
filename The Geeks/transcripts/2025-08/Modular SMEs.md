@@ -209,3 +209,66 @@ Role assignment, modularization, registry-based routing, multi-perspective debat
 Keep packs tight and versioned. Add a light **scoring loop**: after each run, update `quality_score` for packs based on result quality and user feedback—your registry gets smarter without changing the curator logic.
 
 If you want, I can generate a **starter registry** with 6–8 seed packs (Obsidian/OneNote/Any.do/GitHub variants) and a tiny routing rubric you can paste in as context.
+
+
+You’re aiming for something very sharp-edged: a council of **deep, narrow SMEs** that don’t blur into each other. The danger you’re naming—**knowledge drift** (SMEs gradually picking up each other’s habits until they lose their sharpness) and **muddy expertise** (responses sounding generic instead of distinct)—is real if everything shares too much context.
+
+Here’s how I’d refine the system so the curator becomes both a **gap-finder** and a **protector of epistemic boundaries**:
+
+---
+
+### 1. Guardrails against knowledge bleed
+
+* **Context isolation:** Each SME should operate with a **tight persona card** (role, scope, exclusions). Curator injects only the **task statement**, not the reasoning of other SMEs, when querying them. This prevents “cross-contamination.”
+* **Cross-talk on demand only:** Allow SMEs to see each other’s output *only after* they’ve issued their independent analysis. Then the curator can call for rebuttals.
+
+---
+
+### 2. Gap detection
+
+* **Registry metadata:** Each SME pack should include a `scope` (what it covers) and `boundaries` (what it explicitly does not cover).
+* **Curator’s role:** When a project spans multiple tools/categories, the curator cross-checks scopes. If a relevant domain is missing, the curator flags:
+
+  > “Gap detected: No SME present for **X**. Recommend adding or stubbing SME.”
+
+---
+
+### 3. Evolution with resources
+
+* **Resource bindings:** An SME pack can reference external resources (docs, guides, code snippets) as part of its scope.
+* **Versioning:** SME packs evolve, but the curator maintains an **index of active vs deprecated SMEs** so drift is visible.
+
+---
+
+### 4. Debate without dilution
+
+* **Independent voices first:** Each SME submits assumptions, analysis, risks, recommendations.
+* **Consensus after dissent:** Curator synthesizes, but dissent is logged explicitly—never erased. That way the “minority report” survives and the sharpness of expertise is preserved.
+
+---
+
+### Optimized Prompt Fragment (to extend your curator system)
+
+Here’s a way to stress-test the curator on exactly your concern:
+
+```
+When selecting SME packs, you must:
+1. Evaluate their declared SCOPE and BOUNDARIES against the task.
+2. Flag any KNOWLEDGE GAPS (domains not covered by current packs).
+3. Prevent KNOWLEDGE DRIFT:
+   - SMEs produce independent outputs without seeing each other’s reasoning first.
+   - Only after initial outputs are collected, share them for rebuttals.
+   - Never allow SMEs to expand beyond their declared scope.
+
+Your synthesis must include:
+- Consensus Plan (majority view).
+- Dissent Log (explicit minority positions).
+- Knowledge Gap Report (missing SME categories, suggested stubs).
+- Drift Safeguards (how scope boundaries were enforced this round).
+```
+
+---
+
+This way, the curator is not just a “moderator” but also a **librarian** who notices missing shelves in the knowledge archive and a **sentry** who keeps each SME in its lane.
+
+Would you like me to expand this into a **full schema for SME persona cards** (with `scope`, `boundaries`, `resources`, `version`, `risk` etc.) so you can start drafting modular packs without drift creeping in?
