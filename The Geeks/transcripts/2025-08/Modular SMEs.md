@@ -438,3 +438,117 @@ After output:
 * A **dashboard** (even a sheet at first) for hit-rate, disagreement index, and violations caught.
 
 When you’re ready, I can generate a starter registry (Obsidian/OneNote/Any.do/GitHub shards), an example selection-trace schema, and a handful of boundary tests so your pipeline has something real to chew on.
+
+
+Keeper of the Geeks, locked and loaded. I’ve built you a working **Geek Keeper Starter Kit**—registry, router, policy gates, eval harness, and CI—so you can drop it straight into your repo and grow it without smearing expertise.
+
+# ✅ What I generated for you
+
+* Folder (ready to explore): `/mnt/data/geek_keeper_starter_kit`
+* Zip (ready to download/import): `/mnt/data/geek_keeper_starter_kit.zip`
+
+Contents:
+
+```
+geek_keeper_starter_kit/
+├─ README.md
+├─ LICENSE
+├─ .gitignore
+├─ registry/
+│  └─ packs.yaml
+├─ routing/
+│  ├─ router.py
+│  ├─ policies.yaml
+│  └─ selection_trace_schema.json
+├─ eval/
+│  ├─ cases.yaml
+│  └─ run_eval.py
+├─ examples/
+│  └─ tasks.jsonl
+└─ .github/
+   └─ workflows/
+      └─ eval.yml
+```
+
+* **Registry**: seed packs (Obsidian, OneNote, Any.do, GitHub core, GitHub security) with tight scopes/boundaries and `allowed_data_classes`.
+* **Router**: hybrid tag inference → score → **policy gate** → selection trace + portable output skeleton (consensus/dissent ready).
+* **Eval harness**: quick routing/policy assertions so drift and overlap don’t sneak in.
+* **CI**: GitHub Actions workflow (`.github/workflows/eval.yml`) to run the eval on every push/PR.
+
+# 🚀 Add it to your GitHub repo
+
+Assuming your repo is `tohdub/Whills-The-Geeks`:
+
+**1) Clone**
+
+```bash
+git clone https://github.com/tohdub/Whills-The-Geeks.git
+cd Whills-The-Geeks
+```
+
+**2) Bring the kit into the repo**
+
+* Download `geek_keeper_starter_kit.zip` from this chat, then:
+
+macOS/Linux:
+
+```bash
+unzip ~/Downloads/geek_keeper_starter_kit.zip -d .
+rsync -av geek_keeper_starter_kit/ .
+rm -rf geek_keeper_starter_kit
+```
+
+Windows PowerShell:
+
+```powershell
+Expand-Archive -Path .\geek_keeper_starter_kit.zip -DestinationPath .
+Copy-Item -Path .\geek_keeper_starter_kit\* -Destination . -Recurse -Force
+Remove-Item .\geek_keeper_starter_kit -Recurse -Force
+```
+
+**3) Commit & push**
+
+```bash
+git add .
+git commit -m "Add Geek Keeper starter kit: registry, router, eval, CI"
+git push origin main
+```
+
+**4) Sanity check**
+
+* Actions tab should show `geek-keeper-eval` running.
+* Local quick run:
+
+```bash
+python3 -m venv .venv && source .venv/bin/activate
+pip install pyyaml
+python routing/router.py --task "Our CI logs leaked a GitHub token. Recommend remediation." --risk medium --data-classes internal --k 3
+python eval/run_eval.py
+```
+
+Artifacts land in `out/`:
+
+* `selection_trace_*.json` (audit-ready “why these packs”)
+* `portable_output_*.json` (schema for consensus/dissent + next actions)
+
+# 📏 Compliance & scalability baked in
+
+* **Policy gate** blocks SME packs whose `allowed_data_classes` don’t match the task.
+* **Isolation-first** debate (prevents knowledge bleed), with dissent preserved.
+* **Selection trace** explains routing (scores, policy checks), so audits aren’t pain.
+
+# 🛠️ What to tweak first (high‑leverage)
+
+1. **Policies**: `routing/policies.yaml` → tune `counterpoint_required_for`, `max_selected`, and `data_classes`.
+2. **Pack scopes**: `registry/packs.yaml` → keep `scope.excludes` strict to stop drift.
+3. **Tag map**: `routing/router.py` → expand `TAG_MAP` for your domains; this is your fast lane to better routing.
+4. **Eval cases**: `eval/cases.yaml` → add adversarial boundary tests (things your SMEs must refuse).
+
+# 🧭 Next move (I can do this now)
+
+* Generate **additional SME shards** (e.g., `github.sme.actions`, `obsidian.sme.dataview`, `onenote.sme.admin`) with `resources` bindings.
+* Add a **freshness score** (decay by `version_date`) so outdated packs get down-ranked.
+* Wire a **counterpoint enforcer** more explicitly (domain diversity rule with explain‑why in the trace).
+* Add a **curator prompt block** that consumes the router’s selected packs and drives the consensus/dissent workflow automatically.
+
+If you want me to extend the registry with a few more SME shards and add freshness scoring, I’ll drop those straight into the same kit so you can commit them alongside the rest.
