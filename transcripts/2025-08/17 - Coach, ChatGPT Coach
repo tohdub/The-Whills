@@ -88,6 +88,261 @@ The big tradeoff here is **clarity vs. polyphony**:
 
 Since you chose **Coach as one modular voice**, you get **coherence** and **approachability** at the cost of less simulated debate.
 
+Short answer: yes—if you want a **modular council**, it’s cleaner and safer as **multiple files**. One file per concern keeps expertise sharp, makes audits sane, and lets you swap/upgrade parts without touching the whole beast.
+
+Here’s a tight, plug‑and‑play starter kit (six files). Drop these into a repo as-is and you’ve got a working governance skeleton:
+
+---
+
+### 1) `00_curator_system.md` — Council Curator (the conductor)
+
+```md
+You are **Keeper**, the Curator/Operator of a modular SME Council.
+
+Mission: route tasks to the right SMEs, enforce isolation (no cross-talk until first pass), run a structured debate, and synthesize a decision with dissent recorded.
+
+Guardrails:
+- Enforce SME scope/boundaries; block drift.
+- Apply policy gates (data classes, compliance).
+- Require at least one counterpoint for risk ≥ medium.
+
+Workflow:
+1) Intake → extract goals, constraints, risk, data_class.
+2) Select 2–5 SMEs from the Registry (explain why each).
+3) Round 1 (isolated): collect each SME’s assumptions, analysis, risks, recommendation, confidence (0–1).
+4) Round 2 (targeted rebuttals): share summaries; invite counterpoints.
+5) Synthesis: produce Consensus + Dissent Log + Knowledge Gap Report + Compliance Summary.
+6) Emit Output Schema exactly; include Selection Trace (scores, policy checks).
+
+Style: concise, technical, explicit. Proceed with safe defaults if info is missing and label them **ASSUMED**.
+```
+
+---
+
+### 2) `10_sme_template.md` — Reusable SME persona card
+
+```md
+# SME Persona Template
+
+Name: <e.g., "GitHub SME — Security">
+ID: <e.g., github.sme.security>
+Version: 0.1.0
+Owner: <team or person>
+
+Scope:
+- Includes: [ ... ]
+- Excludes: [ ... ]   # strong boundaries to prevent drift
+
+Routing Tags: [ ... ]
+Capabilities: ["assess","recommend","validate"]
+Allowed Data Classes: ["public","internal"]   # disallow PII/PHI by default
+Risk Level: low|medium|high
+
+Resources:
+- Docs: [urls or refs]
+- Snippets: [code/config]
+- Known Limits: [what this SME cannot do]
+
+Response Contract (each round):
+- Assumptions: [...]
+- Analysis: <tight paragraph(s)>
+- Risks: [...]
+- Recommendation: <single, testable>
+- Confidence: 0.0–1.0
+
+Red Lines (must_not):
+- e.g., “Generate legal advice”, “Recommend storing tokens in repo”
+```
+
+---
+
+### 3) `20_registry.yaml` — Index of SMEs (swappable, versioned)
+
+```yaml
+packs:
+  - id: obsidian.sme.core
+    version: "0.1.0"
+    name: "Obsidian SME — Core"
+    scope:
+      includes: ["vault structure","templating","dataview","plugins"]
+      excludes: ["pricing","generic PKM theory"]
+    routing_tags: ["obsidian","pkm","markdown"]
+    capabilities: ["assess","recommend","validate"]
+    allowed_data_classes: ["public","internal"]
+    risk_level: "low"
+    quality_score: 0.80
+
+  - id: onenote.sme.core
+    version: "0.1.0"
+    name: "OneNote SME — Core"
+    scope:
+      includes: ["notebooks","sections","tags","OCR","search"]
+      excludes: ["licensing/pricing"]
+    routing_tags: ["onenote","pkm","office365"]
+    capabilities: ["assess","recommend","validate"]
+    allowed_data_classes: ["public","internal"]
+    risk_level: "low"
+    quality_score: 0.75
+
+  - id: anydo.sme.core
+    version: "0.1.0"
+    name: "Any.do SME — Core"
+    scope:
+      includes: ["tasks","recurring","sync","automation"]
+      excludes: ["pricing"]
+    routing_tags: ["anydo","tasks","calendar"]
+    capabilities: ["assess","recommend","validate"]
+    allowed_data_classes: ["public","internal"]
+    risk_level: "low"
+    quality_score: 0.73
+
+  - id: github.sme.core
+    version: "0.1.0"
+    name: "GitHub SME — Core"
+    scope:
+      includes: ["repos","issues","branching","PRs"]
+      excludes: ["pricing","enterprise sales"]
+    routing_tags: ["github","repos","code"]
+    capabilities: ["assess","recommend","validate"]
+    allowed_data_classes: ["public","internal"]
+    risk_level: "medium"
+    quality_score: 0.85
+
+  - id: github.sme.security
+    version: "0.1.0"
+    name: "GitHub SME — Security"
+    scope:
+      includes: ["branch protection","secret scanning","dependabot","code scanning"]
+      excludes: ["pricing","general devops theory"]
+    routing_tags: ["github","security","devsecops"]
+    capabilities: ["assess","recommend","validate"]
+    allowed_data_classes: ["public","internal"]
+    risk_level: "medium"
+    quality_score: 0.88
+```
+
+---
+
+### 4) `30_debate_protocol.md` — How the council “talks”
+
+```md
+Debate Protocol (Deterministic)
+
+Round 0 — Selection:
+- Curator selects 2–5 SMEs via registry (tag match × quality × freshness) and policy gate (allowed_data_classes).
+- Log Selection Trace: candidates, scores, policy_ok, chosen.
+
+Round 1 — Isolated Analyses:
+- SMEs reply independently using the Response Contract.
+- No SME reads others’ analyses yet (prevents knowledge bleed).
+
+Round 2 — Rebuttals:
+- Curator shares short summaries; requests specific counterpoints.
+- At least one SME must offer a counterposition for risk ≥ medium.
+
+Round 3 — Synthesis:
+- Curator compares recommendations, resolves conflicts, and produces:
+  - Consensus Plan (stepwise, testable)
+  - Dissent Log (strongest rejected positions + rationale)
+  - Knowledge Gap Report (missing SMEs/resources)
+  - Compliance Summary (data classes, redactions, policy checks)
+
+Post — Audit:
+- Persist Output + Selection Trace (hash, timestamps, versions).
+```
+
+---
+
+### 5) `40_output_schema.json` — Portable, machine-checkable output
+
+```json
+{
+  "task_overview": {
+    "objective": "",
+    "constraints": [],
+    "assumptions": [],
+    "risk_level": "",
+    "data_classes": [],
+    "open_questions": []
+  },
+  "selection_trace": {
+    "task_hash": "",
+    "candidates": [
+      {"pack_id": "", "score": 0.0, "policy_ok": true}
+    ],
+    "selected": [
+      {"pack_id": "", "why": ""}
+    ],
+    "policy_checks": {
+      "blocked_packs": [],
+      "notes": ""
+    }
+  },
+  "sme_responses": [
+    {
+      "pack_id": "",
+      "assumptions": [],
+      "analysis": "",
+      "risks": [],
+      "recommendation": "",
+      "confidence": 0.0
+    }
+  ],
+  "consensus_plan": {
+    "steps": [],
+    "tooling": [],
+    "owner": "",
+    "timeline": "",
+    "success_metrics": []
+  },
+  "dissent_log": [
+    {"pack_id": "", "position": "", "reason": ""}
+  ],
+  "knowledge_gap_report": [
+    {"missing_domain": "", "suggested_stub": {"id": "", "scope": [], "tags": []}}
+  ],
+  "compliance_summary": {
+    "data_classes": [],
+    "redactions": [],
+    "policies_invoked": []
+  },
+  "next_actions": [
+    {"action": "", "owner": "", "due": ""}
+  ]
+}
+```
+
+---
+
+### 6) `50_policies.yaml` — Compliance & routing rules (the bouncer)
+
+```yaml
+data_classes: ["public","internal","restricted"]
+counterpoint_required_for: ["medium","high"]
+max_selected: 5
+isolation: true          # no cross-talk until Round 2
+default_risk: "low"
+
+gates:
+  - name: "data-class-allowlist"
+    rule: "task.data_class ∈ SME.allowed_data_classes"
+
+red_flags:
+  - "disable security scanners"
+  - "store tokens in repo"
+actions_on_red_flag: ["warn","downrank","require_human_review"]
+```
+
+---
+
+## Why split across files?
+
+* **Separation of concerns**: Curator logic ≠ SME cards ≠ policy ≠ schema. Clear borders prevent knowledge drift.
+* **Scalability**: Add or retire SMEs by touching only `20_registry.yaml` and a new SME file—no need to rewrite the curator.
+* **Compliance/audit**: Policy is declarative; output is schema-checked; selection is traced. Future-you will thank present-you.
+
+If you want, I can also provide a **minimal router script** later that reads `20_registry.yaml` + `50_policies.yaml`, produces a `selection_trace`, then hands off to your LLM with `00_curator_system.md` + the chosen SME cards.
+
 ---
 
 Would you like me to **add an explicit “weighted analysis step”** to Coach’s workflow? That way, when responding, Coach can briefly show *how* it’s balancing the different expert hats (e.g., *“From a PM perspective…, from a compliance perspective…, overall recommendation…”*). That preserves the single-voice mentor style but still gives you visibility into the multi-discipline reasoning.
