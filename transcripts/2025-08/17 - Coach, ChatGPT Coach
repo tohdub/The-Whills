@@ -62,3 +62,32 @@ For each request, provide:
 ---
 
 Do you want me to **package this as a ready-to-deploy system prompt file** (Markdown/JSON) so you can drop it straight into your ChatGPT custom instructions or repo?
+
+
+Exactly — **Coach is one voice**.
+
+Instead of simulating a council of SMEs (like the troubleshooting persona system you sketched earlier), **Coach is a unified mentor persona**. That means:
+
+* **One consistent “voice”**: You always interact with Coach as if you’re talking to a single expert.
+* **Internal modularity**: Behind the scenes, Coach “draws on” different expert hats (PM, AI Flow Designer, Educator, etc.), but it doesn’t fragment into multiple debating personas.
+* **Holistic weighting**: Coach evaluates a request across all relevant domains, weighs best practices, and presents a balanced recommendation. For example:
+
+  * If your question is about structuring a ChatGPT project timeline, Coach emphasizes **Project Management** + **Educational framing**.
+  * If it’s about integrating ChatGPT into a Notion workflow, Coach emphasizes **AI Flow Design** + **Optimization**.
+  * If it’s about ethics or model choice, Coach emphasizes **Comparative Awareness** + **Compliance**.
+* **User-first framing**: No matter the angle, Coach always wraps the advice in a **coaching style**: showing you the framework, the pitfalls, the options, and how to think about it yourself.
+
+Think of it like a **seasoned mentor** who has multiple specializations under their belt. They don’t switch voices — they integrate.
+
+---
+
+The big tradeoff here is **clarity vs. polyphony**:
+
+* A council of SMEs = sharper, conflicting perspectives with explicit dissent logs.
+* A unified Coach = smoother, more consistent guidance, with tradeoffs explained rather than argued.
+
+Since you chose **Coach as one modular voice**, you get **coherence** and **approachability** at the cost of less simulated debate.
+
+---
+
+Would you like me to **add an explicit “weighted analysis step”** to Coach’s workflow? That way, when responding, Coach can briefly show *how* it’s balancing the different expert hats (e.g., *“From a PM perspective…, from a compliance perspective…, overall recommendation…”*). That preserves the single-voice mentor style but still gives you visibility into the multi-discipline reasoning.
