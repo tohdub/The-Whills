@@ -272,3 +272,169 @@ Your synthesis must include:
 This way, the curator is not just a “moderator” but also a **librarian** who notices missing shelves in the knowledge archive and a **sentry** who keeps each SME in its lane.
 
 Would you like me to expand this into a **full schema for SME persona cards** (with `scope`, `boundaries`, `resources`, `version`, `risk` etc.) so you can start drafting modular packs without drift creeping in?
+
+
+Keeper of the Geeks, you’re thinking about the right dragons: **compliance** and **scalability** are where persona zoos go feral. Here’s a ruthlessly practical plan so Future-You doesn’t glare back from 2026 with “why didn’t we…”.
+
+# North‑Star Principles
+
+* **Tight scopes, tagged everything.** Deep narrow experts; metadata is your oxygen.
+* **Separation of concerns.** Curator routes; SMEs analyze; registry indexes; audit layer watches.
+* **Defense in depth.** Compliance isn’t a feature—it's a fabric across data, prompts, outputs, and ops.
+
+## The “Start-Now Three”
+
+1. **Registry with versioned contracts**
+   A single source of truth for SME packs and routing rules with signed, immutable versions.
+2. **Audit-by-default**
+   Every run logs: inputs, selected packs, prompts shown, outputs emitted, dissent, and approvals—hash it; make it queryable.
+3. **Eval harness + policy tests**
+   Unit tests for expertise boundaries and compliance policies, run on every pack update and routing change.
+
+---
+
+# Routing & Indexing Blueprint (scales without mud)
+
+**Index type:** Hybrid—symbolic tags + sparse (BM25) + dense (embeddings).
+**Routing flow:**
+
+1. **Intent extraction** → produce `task.tags`, `risk_level`, `data_sensitivity`.
+2. **Candidate search** → tag filter → sparse retrieval → dense re-rank.
+3. **Policy gate** → drop any SME whose `allowed_data_classes` conflicts with `task.data_classes`.
+4. **Diversity check** → ensure at least one counterpoint SME if risk ≥ medium.
+5. **K-best selection** → usually 2–5 packs, scored by `quality_score * tag_overlap * freshness * policy_fit`.
+
+**Minimal registry schema (contract)**
+
+```yaml
+pack_id: "github.sme.security"
+version: "0.4.3"
+scope: 
+  includes: ["branch_protection","secret_scanning","dependabot","code_scanning"]
+  excludes: ["pricing","legal_compliance_general"]
+resources:
+  docs: ["url-1","url-2"]     # optional bindings
+  snippets: ["..."]
+routing_tags: ["github","security","devsecops"]
+capabilities: ["assess","recommend","validate"]
+risk_level: "medium"
+allowed_data_classes: ["public","internal"]   # disallow PII by default
+provenance: {owner: "sec-platform", signed_by: "release-bot@keys/v1"}
+quality_score: 0.91
+guardrails:
+  must_not: ["generate legal advice","modify repo without review"]
+  red_flags: ["asks to disable scanning","store tokens in repo"]
+tests:
+  boundary_cases: ["token in history", "monorepo mixed policies"]
+```
+
+---
+
+# Compliance Guardrails (wired in, not bolted on)
+
+* **PII/PHI/Secrets policy:** Classify incoming tasks and data; **block** SME packs whose `allowed_data_classes` don’t match.
+* **Data minimization:** Curator passes **only** the task slice each SME needs—no cross-SME reasoning until after first pass.
+* **Prompt provenance & signing:** Every SME card and routing rule is **signed**; curator refuses unsigned or stale cards.
+* **Retention & redaction:** Keep hashes and structured traces; store raw content only when policy allows; run automatic redaction for logs.
+* **Explainability:** Persist **why** each SME was selected (features + score breakdown).
+* **Right to be forgotten hooks:** De-register or quarantine packs/resources on request and purge cached embeddings.
+
+---
+
+# Scalability Patterns (so growth doesn’t smear expertise)
+
+* **Shard by domain & risk.** E.g., `github.sme.core`, `github.sme.security`, `github.sme.actions`. Load only what’s needed.
+* **Pack lifecycle:** `draft → candidate → active → deprecated → archived`, with timeboxed `active` windows to avoid fossilized advice.
+* **Blue/green routing:** Introduce new routing rules to a small traffic slice; promote on metrics.
+* **Cold/warm tiers:** Keep high-traffic packs warm; move niche packs to cold storage; precompute embeddings for common intents.
+* **Backpressure:** If the debate set grows too large, cap K and force the curator to justify exclusions in the trace.
+
+---
+
+# Gap‑Finding (curator as cartographer)
+
+* Maintain a **coverage matrix**: rows = domain/capability, cols = maturity (`none, stub, candidate, active`).
+* On each task, output a **Knowledge Gap Report**: missing packs, suggested stubs, and expected impact of absence.
+* Track **unroutable intents**; anything that fails routing three times should spawn a pack proposal.
+
+---
+
+# Telemetry You’ll Want on Day 2 (trust me)
+
+* **Routing hit-rate & mean K** selected.
+* **Disagreement index** (how often SMEs diverge) vs task risk.
+* **Policy violations caught** (blocked at gate vs during synthesis).
+* **Drift score** per pack (how often a pack tries to act outside `scope.excludes`).
+* **Outcome quality** (human rating) feeding `quality_score`.
+* **Time-to-consensus** and **rebuttal count** as early warnings for overloaded or overlapping scopes.
+
+---
+
+# Evaluation Harness (small, mighty, continuous)
+
+* **Boundary tests:** Adversarial prompts to push each pack into its `excludes`.
+* **Resource freshness checks:** If a pack cites stale resources, auto-drop `quality_score` until updated.
+* **Counterfactuals:** Ensure the “counterpoint requirement” triggers for medium/high-risk tasks.
+* **Compliance sims:** Synthetic PII/secret strings to verify redaction and pack exclusion.
+
+Minimal YAML for an eval case:
+
+```yaml
+case_id: "gh-secrets-001"
+input: "CI logs show leaked token; recommend remediation for mono-repo"
+expected:
+  must_include: ["revoke token","invalidate credentials","rotate","audit history"]
+  must_exclude: ["store tokens in repo","disable scanners"]
+policies:
+  data_classes: ["internal"]
+route_assertions:
+  required_tags: ["github","security"]
+```
+
+---
+
+# Ops & Wiring Checklist
+
+* **IDs everywhere:** `pack_id@version`, `routing_rule@version`, `policy@version`.
+* **Config as code:** Registry, routing, and policy live in repos with PR review.
+* **Secrets handling:** Access via short‑lived tokens; never embed credentials in packs.
+* **Human-in-the-loop points:** Curator can require approval before enacting high-risk recommendations.
+* **Incident runbook:** Triage steps when routing fails, policy blocks, or SME disagreement is irresolvable.
+
+---
+
+# Drop‑In Curator Addendum (paste into your master prompt)
+
+```
+COMPLIANCE & SCALABILITY MODE
+
+Before selection:
+- Classify task for data sensitivity and risk.
+- Query registry using hybrid retrieval (tags→sparse→dense), then apply policy gate on allowed_data_classes.
+- Produce "Selection Trace" with scores and policy checks.
+
+During analysis:
+- Enforce isolation: SMEs get only the task; no cross-reasoning until first outputs are captured.
+- Require at least one counterpoint SME for risk >= medium.
+
+Synthesis must include:
+- Consensus Plan + Dissent Log.
+- Knowledge Gap Report (missing packs/resources; propose stubs).
+- Drift Safeguards (where scope boundaries were enforced).
+- Compliance Summary (data classes, policies invoked, any redactions).
+
+After output:
+- Emit an Audit Record: {task_hash, packs@versions, selection_trace, policy_checks, metrics}.
+- If any policy breach attempt occurred, mark outcome "CONDITIONAL" and include mitigation.
+```
+
+---
+
+# What to stand up this week
+
+* A tiny **registry repo** with 4–6 seed packs using the contract above.
+* A **routing notebook** (or script) that logs selection traces and emits an audit record JSON.
+* An **eval runner** that executes 10–20 boundary/policy tests on every change.
+* A **dashboard** (even a sheet at first) for hit-rate, disagreement index, and violations caught.
+
+When you’re ready, I can generate a starter registry (Obsidian/OneNote/Any.do/GitHub shards), an example selection-trace schema, and a handful of boundary tests so your pipeline has something real to chew on.
