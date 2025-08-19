@@ -1,122 +1,93 @@
-Skip to content
-You said:
-Hi Coach
-Whills | The Geeks said:
-Greetings. You’ve just activated Coach — the unified, master-level AI coach and tutor you set up.
+Here’s how to build a **single source‑of‑truth knowledge base** that’s **persistent, cumulative**, and usable across **multiple custom GPT projects**, with **automatic refresh from a GitHub repo**.
 
-Here’s the quick recall:
+# Analysis of Request
 
-Lyra is your prompt optimizer, transforming messy inputs into razor-sharp prompts.
-
-Lumen is your ghostwriting coach, a lamp on your words — never writing for you, only guiding.
-
-Coach (me, right now) is the meta-brain: I analyze every request through seven domain lenses — ChatGPT optimization, Project Management, Technical Flow, Educational Instruction, Compliance, Knowledge Curation, and Innovation — then synthesize a single, testable recommendation.
-
-I’m tuned to weigh tradeoffs, score risks, and give you a structured decision matrix, all in one voice.
-
-Want to try me on something right away? You can throw any project, idea, or thorny decision at me — I’ll break it down across the domains and hand back a clear recommendation with scores and tradeoffs.
-
-You said:
-WHow can we create a one source of truth knowledge base that is persistant and cumualative that supports multiply cutsome GPT projects orefreably based on an PAI refresh from a GutHub repor. 
-Whills | The Geeks said:
-
-Thought for 47s
-Here’s how to build a single source‑of‑truth knowledge base that’s persistent, cumulative, and usable across multiple custom GPT projects, with automatic refresh from a GitHub repo.
-
-Analysis of Request
 You want a centralized, versioned knowledge system fed from GitHub, which updates downstream GPT projects reliably and safely. I’ll assume: GitHub is the canonical source; you need multi‑project isolation plus shared “global” docs; and you want CI/CD‑style updates, guardrails (privacy/PII), and measurable retrieval quality. ASSUMED constraints: cloud‑agnostic, modest budget, developer‑friendly.
 
-Perspective Panels
-CHAT (ChatGPT Optimization)
-Goal: consistent grounding, per‑project filters, rich metadata, and high‑quality chunking/embeddings. Needs deterministic doc IDs, stable citations, and time‑travel (“as_of”) options for audits.
-Score: 9/10
+# Perspective Panels
 
-PM (Project Management)
+**CHAT (ChatGPT Optimization)**
+Goal: consistent grounding, per‑project filters, rich metadata, and high‑quality chunking/embeddings. Needs deterministic doc IDs, stable citations, and time‑travel (“as\_of”) options for audits.
+**Score: 9/10**
+
+**PM (Project Management)**
 Clear ownership via CODEOWNERS, GitHub PR workflow, and staged rollouts (dev/stage/prod indices). Milestones are straightforward; risk is moderate if secrets/PII aren’t scanned.
-Score: 8/10
+**Score: 8/10**
 
-FLOW (Technical AI Flow)
+**FLOW (Technical AI Flow)**
 Proposes a “Knowledge API” over a vector store + metadata DB. GitHub webhooks/Actions for incremental ingestion. Namespaces for projects; row‑level security. Scales from pgvector to external vector DB without redesign.
-Score: 8/10
+**Score: 8/10**
 
-EDU (Educational Instruction)
+**EDU (Educational Instruction)**
 Frontmatter schema and contributor docs make the system teachable. Linting + schema validation catch mistakes before indexing.
-Score: 8/10
+**Score: 8/10**
 
-COMP (Compliance & Ethics)
+**COMP (Compliance & Ethics)**
 Tiered data classes (public/internal/restricted), automated secret/PII scans, access controls at query time. Audit logs + versioning.
-Score: 9/10
+**Score: 9/10**
 
-CURATE (Knowledge Curation)
+**CURATE (Knowledge Curation)**
 Canonical “doc registry,” reproducible embeddings (model pinned), changelogs, and a retrieval eval harness to prevent quality drift.
-Score: 9/10
+**Score: 9/10**
 
-INNOVATE (Innovation)
-Adds optional concept glossaries, synonym maps, and temporal routing (“prefer newest unless as_of specified”). Not flashy, but solid.
-Score: 7/10
+**INNOVATE (Innovation)**
+Adds optional concept glossaries, synonym maps, and temporal routing (“prefer newest unless as\_of specified”). Not flashy, but solid.
+**Score: 7/10**
 
-Tradeoff Ledger
-Dynamic API retrieval vs. static file uploads: API is more maintainable and auditable; static is simpler but drifts fast across GPTs.
+# Tradeoff Ledger
 
-One big index vs. per‑project collections: single index eases recall across domains; per‑project collections simplify ACLs. Compromise: global + per‑project namespaces.
+* **Dynamic API retrieval vs. static file uploads**: API is more maintainable and auditable; static is simpler but drifts fast across GPTs.
+* **One big index vs. per‑project collections**: single index eases recall across domains; per‑project collections simplify ACLs. Compromise: global + per‑project namespaces.
+* **Fancy vendor vector DB vs. Postgres/pgvector**: start with pgvector for simplicity; provide an adapter for later migration.
 
-Fancy vendor vector DB vs. Postgres/pgvector: start with pgvector for simplicity; provide an adapter for later migration.
+# Weighted Decision Matrix (default Coach weights)
 
-Weighted Decision Matrix (default Coach weights)
-Option	CHAT .25	PM .15	FLOW .20	EDU .10	COMP .20	CURATE .07	INNOV .03	Weighted
-A. Central “Knowledge API” + dynamic retrieval (recommended)	9	8	8	8	9	9	7	8.49/10
-B. Push static files into each GPT	6	7	6	7	5	5	5	5.95/10
-C. Third‑party wiki + periodic sync	7	7	7	8	7	7	6	7.07/10
-Recommendation (single, testable)
-Adopt Option A: a GitHub‑fed Knowledge Lake with a “Knowledge API” that all GPT projects call at retrieval time.
+| Option                                                           | CHAT .25 | PM .15 | FLOW .20 | EDU .10 | COMP .20 | CURATE .07 | INNOV .03 | Weighted    |
+| ---------------------------------------------------------------- | -------- | ------ | -------- | ------- | -------- | ---------- | --------- | ----------- |
+| **A. Central “Knowledge API” + dynamic retrieval (recommended)** | 9        | 8      | 8        | 8       | 9        | 9          | 7         | **8.49/10** |
+| B. Push static files into each GPT                               | 6        | 7      | 6        | 7       | 5        | 5          | 5         | 5.95/10     |
+| C. Third‑party wiki + periodic sync                              | 7        | 7      | 7        | 8       | 7        | 7          | 6         | 7.07/10     |
 
-Architecture (bird’s‑eye)
-Source of Truth: GitHub repo(s) → Markdown/CSV/JSON, images, diagrams.
+# Recommendation (single, testable)
 
-Ingestion: GitHub App/Webhook → Queue → Worker.
+Adopt **Option A: a GitHub‑fed Knowledge Lake with a “Knowledge API”** that all GPT projects call at retrieval time.
 
-Validate frontmatter schema, run link check, secret/PII scan, convert formats, chunk, embed.
+### Architecture (bird’s‑eye)
 
-Storage:
+* **Source of Truth**: GitHub repo(s) → Markdown/CSV/JSON, images, diagrams.
+* **Ingestion**: GitHub App/Webhook → Queue → Worker.
 
-Blob store (original & normalized docs).
+  * Validate frontmatter schema, run link check, secret/PII scan, convert formats, chunk, embed.
+* **Storage**:
 
-Metadata DB (Postgres): document registry, versions, owners, ACLs, tags, effective dates.
+  * **Blob store** (original & normalized docs).
+  * **Metadata DB** (Postgres): document registry, versions, owners, ACLs, tags, effective dates.
+  * **Vector store** (pgvector or external): embeddings by **namespace** `{global, projectA, projectB,…}`.
+* **Serving**: **Knowledge API** (REST/GraphQL + streaming search) with endpoints:
 
-Vector store (pgvector or external): embeddings by namespace {global, projectA, projectB,…}.
+  * `POST /search` — params: `q`, `project`, `namespaces[]`, `filters{tag,owner,data_class}`, `as_of`, `top_k`, `rerank`.
+  * `GET /doc/{doc_id}@{version}` — fetch canonical content for citations.
+  * `POST /explain` — glossary/term expansion; optional.
+* **GPT Integration**:
 
-Serving: Knowledge API (REST/GraphQL + streaming search) with endpoints:
+  * For ChatGPT “custom GPTs”: expose the API via an **Action** (OpenAPI schema), so GPTs fetch fresh, filtered context at runtime instead of baking static files.
 
-POST /search — params: q, project, namespaces[], filters{tag,owner,data_class}, as_of, top_k, rerank.
+### GitHub → Indexing (incremental)
 
-GET /doc/{doc_id}@{version} — fetch canonical content for citations.
+1. **Trigger**: `push`, `pull_request`, `delete` events.
+2. **Validator**:
 
-POST /explain — glossary/term expansion; optional.
+   * Frontmatter JSON‑Schema check (example below).
+   * Link checker, doc lints, **secret scan** (e.g., trufflehog) and **PII scan** (e.g., Presidio).
+3. **Normalizer**: convert PDFs/Docs → Markdown; unify headings; generate stable `doc_id` (path‑based + content hash).
+4. **Chunker**: token‑aware (e.g., 200–500 tokens, 50‑token overlap, keep headings with children).
+5. **Embedder**: pin model/version; store `embedding_version`.
+6. **Writer**: upsert metadata row, write blobs, upsert vectors in the right namespace(s).
+7. **Tombstones** for deletes (don’t hard‑delete; mark `active=false` with `superseded_by`).
 
-GPT Integration:
+### Minimal repo layout
 
-For ChatGPT “custom GPTs”: expose the API via an Action (OpenAPI schema), so GPTs fetch fresh, filtered context at runtime instead of baking static files.
-
-GitHub → Indexing (incremental)
-Trigger: push, pull_request, delete events.
-
-Validator:
-
-Frontmatter JSON‑Schema check (example below).
-
-Link checker, doc lints, secret scan (e.g., trufflehog) and PII scan (e.g., Presidio).
-
-Normalizer: convert PDFs/Docs → Markdown; unify headings; generate stable doc_id (path‑based + content hash).
-
-Chunker: token‑aware (e.g., 200–500 tokens, 50‑token overlap, keep headings with children).
-
-Embedder: pin model/version; store embedding_version.
-
-Writer: upsert metadata row, write blobs, upsert vectors in the right namespace(s).
-
-Tombstones for deletes (don’t hard‑delete; mark active=false with superseded_by).
-
-Minimal repo layout
+```
 /kb
   /content              # canonical docs
     /global
@@ -128,8 +99,11 @@ Minimal repo layout
     frontmatter.schema.json
   CODEOWNERS
   kb.rules.md           # contributor guide
-Frontmatter example
+```
 
+**Frontmatter example**
+
+```yaml
 ---
 title: "OAuth Flow for Foo"
 doc_id: "kb/oauth/foo"             # stable path id
@@ -142,7 +116,11 @@ effective_from: "2025-01-07"
 supersedes: "kb/oauth/foo@3.2.0"
 summary: "End-to-end OAuth sequence with PKCE."
 ---
-GitHub Action (sketch)
+```
+
+### GitHub Action (sketch)
+
+```yaml
 name: KB Ingest
 on:
   push: { branches: [main] }
@@ -163,9 +141,13 @@ jobs:
       - name: Send to Ingest API
         run: curl -X POST $INGEST_URL -H "Authorization: Bearer $TOKEN" \
              -H "Content-Type: application/json" --data-binary @event.jsonl
-Knowledge API (contract snippets)
-Search request
+```
 
+### Knowledge API (contract snippets)
+
+* **Search request**
+
+```json
 {
   "q": "rotate refresh token policy",
   "project": "project-foo",
@@ -175,343 +157,64 @@ Search request
   "top_k": 8,
   "rerank": true
 }
-Search response returns chunks with doc_id, version, score, highlights, and a canonical URL you can show in citations inside any GPT.
+```
 
-Multi‑project isolation
-Namespaces: one per project + global.
+* **Search response** returns chunks with `doc_id`, `version`, `score`, `highlights`, and a **canonical URL** you can show in citations inside any GPT.
 
-Row‑Level Security in Postgres on metadata; API enforces the same filter for vector queries.
+### Multi‑project isolation
 
-Policy: queries must declare project, which sets allowed namespaces.
+* **Namespaces**: one per project + `global`.
+* **Row‑Level Security** in Postgres on metadata; API enforces the same filter for vector queries.
+* **Policy**: queries must declare `project`, which sets allowed namespaces.
 
-Persistence & cumulative history
-Never delete; supersede.
+### Persistence & cumulative history
 
-Retrieval defaults to latest effective; allow as_of for audits/time‑travel.
+* Never delete; **supersede**.
+* Retrieval defaults to **latest effective**; allow `as_of` for audits/time‑travel.
+* Keep **embedding\_version** so you can re‑embed in the background without breaking serving.
 
-Keep embedding_version so you can re‑embed in the background without breaking serving.
+### Guardrails (privacy & safety)
 
-Guardrails (privacy & safety)
-Data classes: public | internal | restricted.
+* **Data classes**: `public | internal | restricted`.
+* **Restricted** never leaves your infra; optionally excluded from GPTs that don’t pass a policy check.
+* Secret/PII scans block merges (COMP: BLOCKING).
+* Access logs: who searched what and which chunks were returned (minimize retention).
 
-Restricted never leaves your infra; optionally excluded from GPTs that don’t pass a policy check.
+### Evaluation (quality loop)
 
-Secret/PII scans block merges (COMP: BLOCKING).
+* **Golden set**: synthetic queries derived from headings and FAQs.
+* Metrics: hit\@k, MRR, coverage per project, and a “wrong‑but‑confident” flag.
+* Run nightly; if score drops, auto‑open a PR with diffs of impacted docs.
 
-Access logs: who searched what and which chunks were returned (minimize retention).
+# “Two‑Week MVP” (testable)
 
-Evaluation (quality loop)
-Golden set: synthetic queries derived from headings and FAQs.
+**Week 1**
 
-Metrics: hit@k, MRR, coverage per project, and a “wrong‑but‑confident” flag.
+1. Create repo layout + schema + contributor guide.
+2. Stand up Postgres (+pgvector), blob store, minimal FastAPI service.
+3. Build ingestion worker (validate → chunk → embed → upsert).
+4. Wire GitHub webhook for push/PR to ingestion.
 
-Run nightly; if score drops, auto‑open a PR with diffs of impacted docs.
+**Week 2**
+5\. Implement `/search` and `/doc/{id}@{ver}`, with namespaces + data\_class filtering.
+6\. Add GitHub Action for CI checks; block on schema/PII/secrets.
+7\. Plug one custom GPT via an **Action** to call `/search`.
+8\. Seed glossary; run first retrieval eval; set baseline.
 
-“Two‑Week MVP” (testable)
-Week 1
+**Definition of Done**
 
-Create repo layout + schema + contributor guide.
+* New PR to `/kb/content/project-foo` updates GPT answers within minutes.
+* Search returns only allowed namespaces; citations open canonical docs.
+* Eval dashboard shows ≥80% hit\@k on the golden set.
 
-Stand up Postgres (+pgvector), blob store, minimal FastAPI service.
+# Coaching Note
 
-Build ingestion worker (validate → chunk → embed → upsert).
+Once this backbone exists, adding a new GPT is boring in the best way: define its `project` namespace, hand it an Action spec, and it inherits the same governance, evals, and freshness. If you want extra spice later, add **learning cards**: short, curated chunks with few‑shot Q\&A to boost answer shape without leaking policy‑sensitive docs.
 
-Wire GitHub webhook for push/PR to ingestion.
+# Compliance & Quality Note
 
-Week 2
-5. Implement /search and /doc/{id}@{ver}, with namespaces + data_class filtering.
-6. Add GitHub Action for CI checks; block on schema/PII/secrets.
-7. Plug one custom GPT via an Action to call /search.
-8. Seed glossary; run first retrieval eval; set baseline.
+* Mark every doc with `data_class`. Treat **restricted** as non‑exportable and exclude it from GPT contexts unless the runtime identity is authenticated and authorized.
+* Log retrievals, but **don’t** store user questions longer than necessary; segregate analytics.
+* Pin embedding/model versions; record doc SHA and embedding hash for each chunk to keep audits crisp.
 
-Definition of Done
-
-New PR to /kb/content/project-foo updates GPT answers within minutes.
-
-Search returns only allowed namespaces; citations open canonical docs.
-
-Eval dashboard shows ≥80% hit@k on the golden set.
-
-Coaching Note
-Once this backbone exists, adding a new GPT is boring in the best way: define its project namespace, hand it an Action spec, and it inherits the same governance, evals, and freshness. If you want extra spice later, add learning cards: short, curated chunks with few‑shot Q&A to boost answer shape without leaking policy‑sensitive docs.
-
-Compliance & Quality Note
-Mark every doc with data_class. Treat restricted as non‑exportable and exclude it from GPT contexts unless the runtime identity is authenticated and authorized.
-
-Log retrievals, but don’t store user questions longer than necessary; segregate analytics.
-
-Pin embedding/model versions; record doc SHA and embedding hash for each chunk to keep audits crisp.
-
-If you’d like, I can drop in a ready‑to‑use OpenAPI spec for the Knowledge API and a sample GitHub App webhook payload format so your team can scaffold immediately.
-
-You said:
-Hi Coach, can you provide a template to fill out with all of the ifnroamtion available to address when creating such a thing.  The intent is taht this swill be the teamplet the suer will fill out when creating a new persona.  This template should include all options to maximize the usefuelness and perfomenace of the persona to the user.  Does that make sense?
-Whills | The Geeks said:
-
-Thought for 8s
-Persona Design Template — Multi‑project Custom Gpts (coach)
-
-Persona Design Template — Multi‑Project Custom GPTs
-A comprehensive, fill‑in‑the‑blanks template to design a single persona that’s maximally useful, performant, and safe across projects. Use for ChatGPT Custom GPTs or any LLM with actions/RAG.
-
-0) Quick Start (TL;DR)
-One‑liner mission:
-
-{{Who}} helps {{which users}} accomplish {{what outcome}} by {{how}}, within {{constraints}}.
-
-Top 3 success criteria:
-
-{{e.g., ≥90% task completion w/ ≤2 follow‑ups}}
-
-{{e.g., response ≤6s p95}}
-
-{{e.g., zero restricted‑data leaks}}
-
-Activation phrase / entry prompt:
-
-“{{Hello! I’m …}}” + {{2–3 setup questions or defaults}}
-
-1) Identity & Purpose
-Persona name: {{ }}
-
-Version / date: {{ }}
-
-Primary role archetype: [ ] Expert Tutor [ ] Analyst [ ] Research Librarian [ ] Agentic Helper [ ] Editor/Coach [ ] Developer Copilot [ ] Customer Support [ ] Other: {{ }}
-
-Mission statement (2–3 sentences):
-
-{{ }}
-
-Non‑goals / out of scope:
-
-{{ }}
-
-2) Users & Use Cases
-Primary user groups: {{e.g., PMs, engineers, ops, sales}}
-
-Core jobs‑to‑be‑done (JTBD):
-
-{{ }} 2) {{ }} 3) {{ }}
-
-Typical inputs provided by users: {{e.g., specs, bug text, logs}}
-
-Expected outputs: {{e.g., action plan, critique, checklist, SQL}}
-
-Edge cases / tricky tasks (persona should defer or escalate): {{ }}
-
-3) Guardrails & Ethics (Hard Rules)
-Data classes allowed: [ ] Public [ ] Internal [ ] Restricted (explain conditions) → {{ }}
-
-Never do (deny + explain alternative):
-
-{{e.g., legal/medical advice, code execution on prod, personal data processing}}
-
-Attribution & IP rules: {{when to cite, licensing notes}}
-
-Human‑in‑the‑loop points: {{e.g., approval required before sending external email}}
-
-4) Activation & Turn‑Taking
-Activation rule: Respond only when {{trigger}}, else stay silent.
-
-First‑turn behavior:
-
-Greet in {{tone}}.
-
-Ask {{0–3}} targeted questions OR apply smart defaults below.
-
-Clarifying‑question policy:
-
-Ask only if blocking; otherwise proceed with assumptions (log assumptions clearly).
-
-De‑escalation / refusal copy: {{short template for safe declines}}
-
-5) Tone, Style, and Voice
-Tone controls: [ ] Warm [ ] Neutral [ ] Formal [ ] Playful [ ] Concise [ ] Technical [ ] Socratic [ ] Coach‑like [ ] Other: {{ }}
-
-Register: [ ] Plain language [ ] Jargon‑friendly (with first‑use definitions)
-
-Formatting: [ ] Bullets for steps [ ] Code blocks for snippets [ ] Tables for tradeoffs [ ] No emojis [ ] Emojis OK sparingly
-
-Examples of “sounds like this” (2–3 short lines):
-
-{{ }}
-
-6) Inputs, Tools, and Integrations
-Capabilities enabled: [ ] Web browsing [ ] Code interp [ ] Image gen/edit [ ] File reading [ ] Actions/OpenAPI [ ] RAG/Vector search
-
-Actions (APIs) allowed:
-
-Name: {{ }} | Base URL: {{ }} | Auth: {{ }} | Allowed methods: {{GET/POST…}} | Rate limits: {{ }}
-
-Files accepted: {{types, size caps}}
-
-Tool selection policy: {{when to browse vs. answer from memory; when to call Actions}}
-
-7) Knowledge & Retrieval (Single Source of Truth)
-Canonical source(s): [ ] GitHub repo [ ] DB [ ] Drive [ ] CMS [ ] Other: {{ }}
-
-Sync cadence: [ ] Webhook [ ] Nightly [ ] Manual | SLO: {{e.g., ≤10 min freshness}}
-
-Namespaces / collections: {{global, project‑x, project‑y}}
-
-Document schema (frontmatter):
-
-Required: title, doc_id, version, owner, data_class, tags, projects, effective_from, supersedes, summary
-
-Chunking policy: {{size/overlap; keep headings w/ children; code blocks atomic}}
-
-Embedding model & version: {{e.g., text-embedding-3-large vX}}
-
-Reranking model (if any): {{ }}
-
-Filters at query time: project, namespaces[], data_class, tags, as_of, top_k
-
-Citation rule: Always attach canonical URL doc/{id}@{version} for verifiability.
-
-8) Output Contracts (Determinism & Quality)
-Default response structure (choose or define):
-
-
-
-Style constraints: {{e.g., no purple prose; define reading level}}
-
-Length targets: {{short/medium/long}}; hard cap {{tokens/words}}.
-
-Citations required when: {{rules}}
-
-Latency target: p95 {{ }}s
-
-Cost ceiling per answer: {{ }}
-
-9) Few‑Shot Library (Small, Potent Examples)
-Provide 3–5 miniature exemplars that show ideal inputs/outputs.
-
-Example 1 (task): {{ }}
-
-Ideal reasoning shape: {{bullets}}
-
-Example 2: {{ }}
-
-Example 3: {{ }}
-
-10) Error Handling & Uncertainty
-When not confident: add uncertainty flag + offer safe partial result.
-
-Ambiguity policy: make best‑effort answer with explicit assumptions; avoid re‑asking already answered Qs.
-
-Tool/API failure: show graceful degradation path and user‑actionable retry.
-
-11) Compliance & Privacy Controls
-PII/secret scans at ingest: [ ] Required [ ] Optional | Block merge on fail: [ ] Yes [ ] No
-
-Access control: {{row‑level security / namespace allowlist}}
-
-Export rules: Restricted never leaves infra; internal OK in summaries; link to full doc only with auth.
-
-Retention policy for logs/queries: {{days}}
-
-12) Evaluation & Monitoring
-Golden queries set location: {{repo path}}
-
-Metrics: [ ] Hit@K [ ] MRR [ ] Faithfulness [ ] Coverage [ ] Hallucination rate [ ] User CSAT [ ] Latency [ ] Cost
-
-Regression guard: fail build if metrics drop by {{X%}} from baseline.
-
-Feedback loop: capture 👍/👎 tags → triage board owner {{team}}.
-
-13) Rollout & Versioning
-Environments: [ ] Dev [ ] Stage [ ] Prod
-
-Release notes format: {{ }}
-
-Change control: PR review by CODEOWNERS; auto‑changelog.
-
-Backwards‑compatible deprecations: {{policy}}
-
-14) Project‑Specific Overlays
-Define overlays that modify the base persona for each project without forking prompts.
-
-Overlay name: {{project‑foo}}
-
-Additional namespaces: {{ }}
-
-Extra guardrails: {{ }}
-
-Output style tweaks: {{ }}
-
-15) Welcome Message & First‑Run Setup
-Welcome text (short, friendly, purpose‑forward): {{ }}
-
-What I need from you (bullets): {{inputs}}
-
-Examples button(s): {{3 sample starters}}
-
-16) Machine‑Readable Config (fill then commit)
-{
-  "persona": {
-    "name": "{{}}",
-    "version": "{{}}",
-    "mission": "{{}}",
-    "archetype": "{{}}",
-    "tone": ["{{}}"],
-    "activation": {"trigger": "{{}}", "first_turn_questions": {{true/false}} },
-    "guardrails": {"never_do": ["{{}}"], "data_classes": ["public","internal"], "refusal_copy": "{{}}"},
-    "capabilities": {"browse": {{true}}, "code": {{false}}, "image": {{false}}, "file_read": {{true}}, "actions": ["{{name}}"]},
-    "knowledge": {"sources": ["github"], "namespaces": ["global","{{project}}"], "freshness_slo_min": {{10}}, "embedding_model": "{{}}", "chunk": {"size": {{350}}, "overlap": {{60}}}},
-    "output_contract": {"structure": "{{Analysis→Options→Rec→Next}}", "length": "{{medium}}", "citations": {{"required_when": "non‑common facts"}}, "latency_p95_s": {{6}}, "cost_ceiling_usd": {{0.02}}},
-    "evaluation": {"metrics": ["hit@k","mrr","faithfulness"], "regression_fail_pct": {{10}}},
-    "privacy": {"retention_days": {{30}}, "row_level_security": {{true}}}
-  }
-}
-17) Checklists
-Design Review
-
-
-
-Go‑Live
-
-
-
-Maintenance
-
-
-
-18) Notes for Authors
-Keep prompts modular. Prefer overlays to forks.
-
-Use compact, testable language. Avoid vague verbs (“help”, “optimize”) without definitions.
-
-Regularly prune exemplars; stale examples are stealth bugs.
-
-Appendix A: Example Smart Defaults (copy/paste)
-If user gives no constraints: assume {{project}} = "global" and output length = "short".
-
-If browsing could change a fact: browse; else answer from knowledge base.
-
-If ambiguity remains after first pass: state 2–3 assumptions and proceed.
-
-Appendix B: Refusal Template
-I can’t assist with {{reason}}. Here’s a safe alternative: {{high‑level guidance or policy‑compliant path}}.
-
-Appendix C: Answer Skeletons
-Decision Support
-
-Analysis → Options (pros/cons) → Weighted matrix → Recommendation → Next steps.
-
-Critique/Coaching
-
-Diagnostic questions → Specific feedback by category → Actionable revision plan.
-
-Research Summary
-
-Question → Method (sources/criteria) → Findings with citations → Limitations → Follow‑ups.
-
-Perfectly sensible. I dropped a full fill‑in‑the‑blanks Persona Design Template into the canvas for you—structured from mission and guardrails through RAG settings, outputs, evals, and rollout, plus a machine‑readable JSON config and checklists.
-
-Want me to tailor a prefilled example for your next persona, or generate the OpenAPI “Actions” stub that matches the Knowledge API you’re planning?
-
-
-
-
-No file chosenNo file chosen
-ChatGPT can make mistakes. Check important info.
+If you’d like, I can drop in a ready‑to‑use OpenAPI spec for the **Knowledge API** and a sample GitHub App webhook payload format so your team can scaffold immediately.
