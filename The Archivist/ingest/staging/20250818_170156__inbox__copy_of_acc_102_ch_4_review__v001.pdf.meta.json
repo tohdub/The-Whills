@@ -1,0 +1,16 @@
+{
+  "original_name": "Copy of ACC-102 - Ch. 4 Review.pdf",
+  "normalized_name": "20250818_170156__inbox__copy_of_acc_102_ch_4_review__v001.pdf",
+  "size_bytes": 1797917,
+  "sha256": "a11e4c220843eebc271945d7c3eb8a83332c7a1e4aa29a40a36ad3a4d4052609",
+  "source": "inbox",
+  "ingested_at": "2025-08-18T17:01:56Z",
+  "mime": null,
+  "tags": [],
+  "provenance": {
+    "user": "todd",
+    "machine": null,
+    "original_path": "C:\\Users\\todd\\Desktop\\GitHub\\GPT-Oracle-OS\\ingest\\inbox\\Copy of ACC-102 - Ch. 4 Review.pdf"
+  },
+  "profile": "pdf_document"
+}

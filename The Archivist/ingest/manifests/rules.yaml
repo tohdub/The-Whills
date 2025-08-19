@@ -1,0 +1,8 @@
+profiles:
+  pdf_document:   { derive: [ocr_text, split_pages, thumbnails], register: knowledge }
+  audio_meeting:  { derive: [transcript, summary_request], register: assets }
+  image_scan:     { derive: [ocr_text, exif_extract, thumbnail], register: knowledge }
+  office_doc:     { derive: [text_extract, thumbnails], register: knowledge }
+limits:
+  max_mb: 500
+  block_ext: [".exe",".dll",".bat"]

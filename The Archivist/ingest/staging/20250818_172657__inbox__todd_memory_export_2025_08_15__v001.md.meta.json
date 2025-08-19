@@ -1,0 +1,16 @@
+{
+  "original_name": "todd_memory_export_2025-08-15.md",
+  "normalized_name": "20250818_172657__inbox__todd_memory_export_2025_08_15__v001.md",
+  "size_bytes": 1769,
+  "sha256": "25bf804ed9432561744f8acc0dd813c467884db9ee6268b62c8e207f3e4040c1",
+  "source": "inbox",
+  "ingested_at": "2025-08-18T17:26:57Z",
+  "mime": null,
+  "tags": [],
+  "provenance": {
+    "user": "todd",
+    "machine": null,
+    "original_path": "C:\\Users\\todd\\Desktop\\GitHub\\GPT-Oracle-OS\\ingest\\inbox\\todd_memory_export_2025-08-15.md"
+  },
+  "profile": "generic_blob"
+}

@@ -1,0 +1,16 @@
+{
+  "original_name": "Copy of ACC-102 - Ch. 3 Reading.pdf",
+  "normalized_name": "20250818_172657__inbox__copy_of_acc_102_ch_3_reading__v001.pdf",
+  "size_bytes": 1852539,
+  "sha256": "5e868d0620514cf67b4a5da3afbb3eb82257ad77dd4d949ca8d50b36a308ab3b",
+  "source": "inbox",
+  "ingested_at": "2025-08-18T17:26:57Z",
+  "mime": null,
+  "tags": [],
+  "provenance": {
+    "user": "todd",
+    "machine": null,
+    "original_path": "C:\\Users\\todd\\Desktop\\GitHub\\GPT-Oracle-OS\\ingest\\inbox\\Copy of ACC-102 - Ch. 3 Reading.pdf"
+  },
+  "profile": "pdf_document"
+}
