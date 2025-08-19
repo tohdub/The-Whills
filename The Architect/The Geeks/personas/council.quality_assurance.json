@@ -1,0 +1,6 @@
+{
+  "name": "quality_assurance_council",
+  "quorum": 2,
+  "strategy": "check_against_playbooks",
+  "tie_breaker": "prefer_higher_priority_knowledge"
+}

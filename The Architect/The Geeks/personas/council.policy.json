@@ -1,0 +1,11 @@
+{
+  "workflow_optimization_council": {
+    "quorum": 2,
+    "strategies": [
+      "prefer_cited_answers",
+      "prefer_higher_priority_knowledge",
+      "request_more_citations_on_tie"
+    ],
+    "max_rounds": 2
+  }
+}

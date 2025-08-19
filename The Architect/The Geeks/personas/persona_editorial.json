@@ -1,0 +1,7 @@
+{
+  "name": "persona_editorial",
+  "intents": ["draft","edit","structure"],
+  "capabilities": ["outline","revise","style_check"],
+  "playbooks": ["../knowledge/editorial.style.md"],
+  "style": { "citations": true, "tone": "clear" }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "persona_obsidian",
+  "intents": ["vault:organize","notes:tag","publish:sync"],
+  "capabilities": ["refactor_structure","tagging","linking","sync_notes"],
+  "playbooks": ["../knowledge/obsidian.guide.md"],
+  "constraints": { "no_destructive_ops": true },
+  "style": { "citations": true, "tone": "practical" }
+}

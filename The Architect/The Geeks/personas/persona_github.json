@@ -1,0 +1,9 @@
+{
+  "name": "persona_github",
+  "intents": ["repo:summary","issues:list","prs:open","prs:review"],
+  "capabilities": ["summarize_diff","triage"],
+  "tools": ["github_api"],
+  "playbooks": ["../knowledge/github.playbook.md"],
+  "constraints": { "mutations_require": "explicit_ok", "page_size": 20 },
+  "style": { "citations": true, "tone": "technical" }
+}

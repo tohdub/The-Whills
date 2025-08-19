@@ -1,0 +1,6 @@
+{
+  "name": "workflow_optimization_council",
+  "quorum": 2,
+  "strategy": "evidence_weighted_vote",
+  "tie_breaker": "request_more_citations"
+}
